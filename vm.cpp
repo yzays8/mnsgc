@@ -5,8 +5,7 @@
 
 const int kInitialGcThreshold = 10;
 
-VirtualMachine::VirtualMachine() : stack_{}, stack_ptr_{0} {
-  first_object= nullptr;
+VirtualMachine::VirtualMachine() : stack_{}, stack_ptr_{0}, first_object_{nullptr} {
   num_objects = 0;
   max_objects = kInitialGcThreshold;
 }
@@ -77,7 +76,7 @@ void VirtualMachine::MarkAll() {
 }
 
 void VirtualMachine::Sweep() {
-  Object** object = &first_object;
+  Object** object = &first_object_;
   while (*object != nullptr) {
     if (!(*object)->marked) { // unmarked, unreachable
       Object* unreached = *object;
@@ -98,7 +97,7 @@ void VirtualMachine::GC() {
 }
 
 void VirtualMachine::FreeAllObjects() {
-  Object* object = first_object;
+  Object* object = first_object_;
   while (object != nullptr) {
     Object* temp = object;
     object = object->next;
