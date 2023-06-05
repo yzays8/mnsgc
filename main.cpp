@@ -1,8 +1,9 @@
 #include <iostream>
+#include <memory>
 
 #include "vm.hpp"
 
-void TestManualGC(VirtualMachine* vm) {
+void TestManualGC(std::shared_ptr<VirtualMachine> vm) {
   std::cout << "Test 1: Manual GC" << std::endl;
   int objects_count = 0;
 
@@ -24,7 +25,7 @@ void TestManualGC(VirtualMachine* vm) {
   std::cout << "Number of objects before GC: " << objects_count << ", after GC: " << vm->num_objects << std::endl;
 }
 
-void TestAutomaticGC(VirtualMachine* vm) {
+void TestAutomaticGC(std::shared_ptr<VirtualMachine> vm) {
   std::cout << "Test 2: Automatic GC" << std::endl;
   VirtualMachine::Object* p1;
   VirtualMachine::Object* p2;
@@ -51,12 +52,8 @@ void TestAutomaticGC(VirtualMachine* vm) {
 }
 
 int main() {
-  VirtualMachine* vm1 = new VirtualMachine;
-  TestManualGC(vm1);
-  delete vm1;
+  auto vm = std::make_shared<VirtualMachine>();
+  TestManualGC(vm);
   putchar('\n');
-
-  VirtualMachine* vm2 = new VirtualMachine;
-  TestAutomaticGC(vm2);
-  delete vm2;
+  TestAutomaticGC(vm);
 }

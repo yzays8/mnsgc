@@ -9,7 +9,7 @@ all: $(TARGET)
 
 .PHONY: clean
 clean:
-	rm -rf *.o
+	rm -rf *.o $(TARGET)
 
 .PHONY: run
 run:

@@ -3,7 +3,7 @@
 
 #include "vm.hpp"
 
-const int kInitialGcThreshold = 10;
+constexpr int kInitialGcThreshold = 10;
 
 VirtualMachine::VirtualMachine() : stack_{}, stack_ptr_{0}, first_object_{nullptr} {
   num_objects = 0;
@@ -44,18 +44,6 @@ VirtualMachine::Object* VirtualMachine::PushPair() {
   return object;
 }
 
-VirtualMachine::Object* VirtualMachine::PushPair(Object* head, Object* tail) {
-  Object* object = new Object{this, OBJ_PAIR};
-  if (stack_ptr_ <= 1) {
-    std::cerr << "Stack size must be more than 1 for PushPair(Object* head, Object* tail)" << std::endl;
-    std::exit(EXIT_FAILURE);
-  }
-  object->tail = tail;
-  object->head = head;
-  Push(object);
-  return object;
-}
-
 void VirtualMachine::Mark(Object* object) {
   if (object->marked) return; // deal with circular references
 
@@ -82,10 +70,11 @@ void VirtualMachine::Sweep() {
       Object* unreached = *object;
       *object = unreached->next;
       delete unreached;
+      unreached = nullptr;
       --num_objects;
     } else {  // marked, reachable
       (*object)->marked = 0;
-      object = &(*object)->next;
+      object = &((*object)->next);
     }
   }
 }
@@ -102,6 +91,7 @@ void VirtualMachine::FreeAllObjects() {
     Object* temp = object;
     object = object->next;
     delete temp;
+    temp = nullptr;
     --num_objects;
   }
   std::cout << "Free all objects" << std::endl;

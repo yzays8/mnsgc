@@ -1,8 +1,9 @@
 #pragma once
 
 #include <array>
+#include <memory>
 
-const int kStackMaxSize = 256;
+constexpr int kStackMaxSize = 256;
 
 enum ObjectType {
   OBJ_INT,
@@ -45,7 +46,6 @@ class VirtualMachine {
 
   void PushInt(int value);
   Object* PushPair();
-  Object* PushPair(Object* head, Object* tail);
   void GC();
 
   ~VirtualMachine();
